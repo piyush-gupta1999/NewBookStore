@@ -1,7 +1,6 @@
 package com.assignment.readingisgood.controllers;
 
 import com.assignment.readingisgood.exceptions.BookNotFound;
-import com.assignment.readingisgood.exceptions.InvalidQuantity;
 import com.assignment.readingisgood.exceptions.OrderNotFound;
 import com.assignment.readingisgood.exceptions.OutOfStockException;
 import com.assignment.readingisgood.models.Order;
@@ -27,7 +26,7 @@ public class OrderController {
         OrderResponse orderResponse;
         try{
             orderResponse = new OrderResponse("Success",orderService.bookOrder(orderRequest));
-        } catch (BookNotFound | InvalidQuantity | OutOfStockException exception) {
+        } catch (Exception exception) {
             orderResponse = new OrderResponse("Fail",exception.getMessage());
         }
         return orderResponse;
