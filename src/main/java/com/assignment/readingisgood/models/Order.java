@@ -1,5 +1,6 @@
 package com.assignment.readingisgood.models;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Entity
 @Table(name = "ORDERS")
 public class Order {
+    @NotNull
     @Id
     private String id;
     private String customer_id;
