@@ -1,12 +1,12 @@
 
-##Technology Used
+## Technology Used
 1. Java Version - 11
 2. Framework - Spring Framework
 3. Database Used - H2   
 4. Testing Tool - Postman
 
 
-##How to start the project.
+## How to start the project.
 1. First you should have H2 instance up and running on your system.
 2. You can change the configurations of database in application.properties based on your server details. Below ones are mine.
 -  spring.h2.console.path=localhost:8082
