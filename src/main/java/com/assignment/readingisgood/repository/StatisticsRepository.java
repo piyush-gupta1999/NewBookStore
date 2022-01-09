@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface StatisticsRepository extends JpaRepository<Statistics,String> {
-    @Query(value = "select month(order_date),count(1) as orderCount ,sum(book_count) bookCount, sum(price) purchaseAmount from ORDERS where year(order_date) = :year and customer_id = :customer_id group by month(order_date) as Statistics",nativeQuery = true)
-    List<Statistics> getStats(@Param("year") String year, @Param("customer_id") String customer_id);
+    @Query(value = "SELECT month(o.order_date) month_no,COUNT(1) count,sum(book_count) book_count,sum(price) price FROM ORDERS o WHERE year(o.order_date) = :year AND o.customer_id = :customer_id GROUP BY month(o.order_date)",nativeQuery = true)
+    List<Statistics> getStats(@Param("customer_id") String customer_id,@Param("year") String year);
 }

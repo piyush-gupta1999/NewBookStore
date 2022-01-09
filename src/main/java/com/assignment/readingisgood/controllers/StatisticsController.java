@@ -11,11 +11,11 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
-    @RequestMapping(value = "/statistics/filter={customerId}&{year}",method = RequestMethod.GET)
+    @RequestMapping(value = "/statistics/{customerId}/filter={year}",method = RequestMethod.GET)
     @ResponseBody
     public Response getStatistics(@PathVariable String customerId, @PathVariable String year) {
         try {
-            return new Response("Success",statisticsService.getStats(year, customerId));
+            return new Response("Success",statisticsService.getStats(customerId,year));
         }catch(Exception e) {
             return new Response("Fail",e.getMessage());
         }

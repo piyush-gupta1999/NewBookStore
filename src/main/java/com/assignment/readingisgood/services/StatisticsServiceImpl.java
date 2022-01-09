@@ -1,7 +1,6 @@
 package com.assignment.readingisgood.services;
 
 import com.assignment.readingisgood.models.Statistics;
-import com.assignment.readingisgood.repository.OrderRepository;
 import com.assignment.readingisgood.repository.StatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
