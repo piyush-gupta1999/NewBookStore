@@ -1,9 +1,6 @@
 package com.assignment.readingisgood.services;
 
-import com.assignment.readingisgood.exceptions.BookNotFound;
-import com.assignment.readingisgood.exceptions.InvalidQuantity;
-import com.assignment.readingisgood.exceptions.OrderNotFound;
-import com.assignment.readingisgood.exceptions.OutOfStockException;
+import com.assignment.readingisgood.exceptions.*;
 import com.assignment.readingisgood.models.Book;
 import com.assignment.readingisgood.models.BookQuantity;
 import com.assignment.readingisgood.models.Order;
@@ -30,13 +27,12 @@ public class OrderServiceImpl implements OrderService{
     private BookService bookService;
 
     @Override
-    public String bookOrder(OrderRequest orderRequest) throws InvalidQuantity, BookNotFound, OutOfStockException {
+    public String bookOrder(OrderRequest orderRequest) throws BookNotFound, OutOfStockException, UserNotExist, InvalidInput {
+        validateInputs(orderRequest);
         List<BookQuantity> bookList = orderRequest.getBookList();
         String customer_id = orderRequest.getCustomer_id();
         if(customerServices.validateCustomer(customer_id)){
             for(BookQuantity b:bookList){
-                if(b.getQuantity() <= 0)
-                    throw new InvalidQuantity("Book id: " + b.getBookId() + " is having an invalid quantity.");
                 Integer actualQuantity = bookService.getQuantity(b.getBookId());
                 if(actualQuantity < b.getQuantity()){
                     throw new OutOfStockException("Book id: " + b.getBookId() + " is having " + actualQuantity+ " quantity and you wanted "+ b.getQuantity()+ " quantity.");
@@ -55,7 +51,7 @@ public class OrderServiceImpl implements OrderService{
             orderRepository.save(order);
             return order_id;
         }else{
-            return "Customer Id: " + customer_id +" not found.";
+            throw new UserNotExist("Customer id: " + customer_id +" not found.");
         }
 
     }
@@ -77,6 +73,15 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public List<Order> getCustomerOrders(String customerId) {
         return orderRepository.findByCustomerId(customerId);
+    }
+
+    private void validateInputs(OrderRequest orderRequest) throws InvalidInput {
+        List<BookQuantity> bookList = orderRequest.getBookList();
+        for(BookQuantity b:bookList){
+            if(b.getQuantity() <= 0)
+                throw new InvalidInput("Book id: " + b.getBookId() + " is having an invalid quantity.");
+        }
+
     }
 
 }
