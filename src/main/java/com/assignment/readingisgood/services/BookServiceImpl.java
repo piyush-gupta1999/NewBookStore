@@ -1,9 +1,6 @@
 package com.assignment.readingisgood.services;
 
-import com.assignment.readingisgood.exceptions.BookAlreadyPresent;
-import com.assignment.readingisgood.exceptions.BookNotFound;
-import com.assignment.readingisgood.exceptions.InvalidQuantity;
-import com.assignment.readingisgood.exceptions.OutOfStockException;
+import com.assignment.readingisgood.exceptions.*;
 import com.assignment.readingisgood.models.Book;
 import com.assignment.readingisgood.models.BookQuantity;
 import com.assignment.readingisgood.repository.BookRepository;
@@ -21,12 +18,10 @@ public class BookServiceImpl implements BookService{
     private BookRepository bookRepository;
 
     @Override
-    public String addBook(Book book) throws InvalidQuantity, BookAlreadyPresent {
+    public String addBook(Book book) throws BookAlreadyPresent, InvalidInput {
          String id = book.getId();
-         Integer quantity = book.getQuantity();
-         if(quantity<0){
-            throw new InvalidQuantity("Quantity should be positive.");
-         }else if(bookRepository.existsById(id)){
+         validateInputs(book);
+         if(bookRepository.existsById(id)){
              throw new BookAlreadyPresent("Book is present with id:"+id);
          }else{
              bookRepository.save(book);
@@ -39,7 +34,7 @@ public class BookServiceImpl implements BookService{
         Book book = getBook(id);
         int updatedQuantity = bookRepository.getById(id).getQuantity() + quantity;
         if(updatedQuantity < 0){
-            throw new OutOfStockException("Can't update OOS.");
+            throw new OutOfStockException("Book with id: " + id+ " is out of stock.");
         }
         book.setQuantity(updatedQuantity);
         bookRepository.save(book);
@@ -60,6 +55,18 @@ public class BookServiceImpl implements BookService{
         }else {
             throw new BookNotFound("Book Not Found with Id:"+bookId);
         }
-
+    }
+    private void validateInputs(Book book) throws InvalidInput{
+        if(book.getId().equals("")){
+            throw new InvalidInput("Book id can't be empty.");
+        }else if(book.getName().equals("")){
+            throw new InvalidInput("Book name can't be empty.");
+        }else if(book.getAuthor().equals("")){
+            throw new InvalidInput("Author name can't be empty.");
+        }else if(book.getQuantity() <= 0){
+            throw new InvalidInput("Quantity should be positive.");
+        }else if(book.getPrice()<(double)0){
+            throw new InvalidInput("Price can't be negative.");
+        }
     }
 }
