@@ -1,5 +1,6 @@
 package com.assignment.readingisgood.models;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,10 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Entity
 public class Statistics {
+    @NotNull
     @Id
-    private String month;
-    private Integer orderCount;
-    private Integer bookCount;
-    private Double purchaseAmount;
+    private Integer month_no;
+    private Integer count;
+    private Integer book_count;
+    private Double price;
 }
