@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService{
         String customer_id = orderRequest.getCustomer_id();
         if(customerServices.validateCustomer(customer_id)){
             for(BookQuantity b:bookList){
-                if(b.getQuantity() < 0)
+                if(b.getQuantity() <= 0)
                     throw new InvalidQuantity("Book id: " + b.getBookId() + " is having an invalid quantity.");
                 Integer actualQuantity = bookService.getQuantity(b.getBookId());
                 if(actualQuantity < b.getQuantity()){
