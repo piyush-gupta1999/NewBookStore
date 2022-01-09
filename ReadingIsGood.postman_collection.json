@@ -40,18 +40,71 @@
 		{
 			"name": "Update Book Quantity",
 			"request": {
-				"method": "GET",
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "getir",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "piyush",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
 				"header": [],
-				"url": null
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"bookId\" : \"1\",\r\n    \"quantity\" : -200\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/books/update",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"update"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Add Book",
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
-				"url": null
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"10\",\r\n    \"name\": \"2\",\r\n    \"author\": \"Prem\",\r\n    \"quantity\": 10,\r\n    \"price\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/books/add",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"books",
+						"add"
+					]
+				}
 			},
 			"response": []
 		},
