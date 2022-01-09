@@ -1,7 +1,5 @@
 package com.assignment.readingisgood.controllers;
 
-import com.assignment.readingisgood.exceptions.UserAlreadyExist;
-import com.assignment.readingisgood.models.BookResponse;
 import com.assignment.readingisgood.models.Customer;
 import com.assignment.readingisgood.models.CustomerResponse;
 import com.assignment.readingisgood.services.CustomerServices;
@@ -19,13 +17,11 @@ public class CustomerController {
     @RequestMapping(value = "/customers/add",method = RequestMethod.POST)
     @ResponseBody
     public CustomerResponse addCustomer(@RequestBody Customer customer) {
-        CustomerResponse customerResponse;
         try{
-            customerResponse = new CustomerResponse("Success",customerServices.addCustomer(customer));
-        }catch (UserAlreadyExist userAlreadyExist) {
-            customerResponse = new CustomerResponse("Fail",userAlreadyExist.getMessage());
+            return new CustomerResponse("Success",customerServices.addCustomer(customer));
+        }catch (Exception exception) {
+            return new CustomerResponse("Fail",exception.getMessage());
         }
-        return customerResponse;
     }
 
     @RequestMapping(value = "/customers/{customerId}",method = RequestMethod.GET)
