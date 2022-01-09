@@ -1,9 +1,6 @@
 package com.assignment.readingisgood.controllers;
 
-import com.assignment.readingisgood.exceptions.BookAlreadyPresent;
-import com.assignment.readingisgood.exceptions.BookNotFound;
-import com.assignment.readingisgood.exceptions.InvalidQuantity;
-import com.assignment.readingisgood.exceptions.OutOfStockException;
+import com.assignment.readingisgood.exceptions.InvalidInput;
 import com.assignment.readingisgood.models.Book;
 import com.assignment.readingisgood.models.BookQuantity;
 import com.assignment.readingisgood.models.BookResponse;
@@ -16,12 +13,15 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
-    @RequestMapping(value = "/books/update/{bookId}/quantity/{quantity}",method = RequestMethod.GET)
+    @RequestMapping(value = "/books/update",method = RequestMethod.POST)
     @ResponseBody
-    public BookResponse updateQuantity(@PathVariable String bookId, @PathVariable Integer quantity) {
+    public BookResponse updateQuantity(@RequestBody BookQuantity bookQuantity) {
         try{
-            BookQuantity bookQuantity = bookService.updateQuantity(bookId,quantity);
-            return new BookResponse("Success",bookQuantity);
+            if(bookQuantity.getQuantity() <= 0){
+                throw new InvalidInput("Quantity can't be negative.");
+            }
+            BookQuantity bookQuantity2 = bookService.updateQuantity(bookQuantity.getBookId(),bookQuantity.getQuantity());
+            return new BookResponse("Success",bookQuantity2);
         } catch (Exception exception) {
             return new BookResponse("Fail",exception.getMessage());
         }

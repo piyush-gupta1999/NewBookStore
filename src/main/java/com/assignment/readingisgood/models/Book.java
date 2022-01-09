@@ -1,5 +1,6 @@
 package com.assignment.readingisgood.models;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "BOOK")
 public class Book {
+    @NotNull
     @Id
     private String id;
     private String name;
