@@ -2,69 +2,75 @@ package com.assignment.readingisgood.controllers;
 
 import com.assignment.readingisgood.models.Customer;
 import com.assignment.readingisgood.models.CustomerResponse;
-import com.assignment.readingisgood.services.BookService;
+import com.assignment.readingisgood.models.Response;
+import com.assignment.readingisgood.repository.CustomerRepository;
 import com.assignment.readingisgood.services.CustomerServices;
 import com.assignment.readingisgood.services.OrderService;
-import com.assignment.readingisgood.services.StatisticsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.reactive.server.StatusAssertions;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.util.UUID;
+
+import static org.springframework.http.RequestEntity.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = CustomerController.class)
 @WithMockUser
-@EnableJpaRepositories
-@ComponentScan("com.assignment.readingisgood")
+@ContextConfiguration(classes = {CustomerController.class})
 public class CustomerControllerTest {
     @Autowired
     private MockMvc mockMvc;
-
-    @Mock
-    private EntityManagerFactory entityManager;
 
     @MockBean
     private CustomerServices customerServices;
 
     @MockBean
-    private BookService bookService;
-
-    @MockBean
     private OrderService orderService;
 
     @MockBean
-    private StatisticsService statisticsService;
+    private CustomerRepository customerRepository;
 
     String id = UUID.randomUUID().toString();
+    Response mockCustomerAPIResponse = new CustomerResponse("Success",id);
     Customer mockCustomer = new Customer("Piyush Gupta", "guptapiyush963@gmail.com","7015775512");
-    CustomerResponse mockCustomerAPIResponse = new CustomerResponse("Success",id);
+
+    @Before
+    public void setUp() {
+        Customer mockCustomer = new Customer("Piyush Gupta", "guptapiyush963@gmail.com","7015775512");
+        mockCustomer.setId(id);
+        Mockito.when(customerRepository.existsById(mockCustomer.getId()))
+                .thenReturn(true);
+    }
+
     @Test
-    public void addNewCustomer_success() throws Exception {
-        Mockito.when(customerServices.addCustomer(new Customer(Mockito.anyString(),Mockito.anyString(),Mockito.anyString()))).thenReturn(mockCustomerAPIResponse.toString());
-        RequestBuilder requestBuilder =
-                MockMvcRequestBuilders
-                .post("/customers/add")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .content(mockCustomer.toString())
-                        .contentType(MediaType.APPLICATION_JSON);
-        MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-        System.out.println("RESULT: " + result.getResponse().getContentAsString());
-        String expected = mockCustomerAPIResponse.toString();
-        JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(),false);
+    public void addNewCustomer_forbidden() throws Exception {
+        Mockito.when(customerServices.addCustomer(mockCustomer)).thenReturn(String.valueOf(mockCustomerAPIResponse));
+        mockMvc.perform(MockMvcRequestBuilders.post("/customers/add")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(mockCustomer)))
+                .andExpect(status().isForbidden());
+    }
+
+    public static String asJsonString(final Object obj) {
+        try {
+            return new ObjectMapper().writeValueAsString(obj);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
