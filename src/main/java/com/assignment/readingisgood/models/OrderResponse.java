@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class OrderResponse{
+public class OrderResponse implements Response{
     private String status;
     private Object description;
 

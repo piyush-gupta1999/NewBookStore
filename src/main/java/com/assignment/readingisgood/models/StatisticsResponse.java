@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CustomerResponse implements Response{
+public class StatisticsResponse implements Response{
     private String status;
     private Object description;
 
     @Override
     public String toString() {
-        return "CustomerResponse{" +
+        return "OrderResponse{" +
                 "status='" + status + '\'' +
                 ", description=" + description +
                 '}';
