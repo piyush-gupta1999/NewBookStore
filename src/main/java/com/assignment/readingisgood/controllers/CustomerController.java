@@ -2,6 +2,7 @@ package com.assignment.readingisgood.controllers;
 
 import com.assignment.readingisgood.models.Customer;
 import com.assignment.readingisgood.models.CustomerResponse;
+import com.assignment.readingisgood.models.Response;
 import com.assignment.readingisgood.services.CustomerServices;
 import com.assignment.readingisgood.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class CustomerController {
 
     @RequestMapping(value = "/customers/add",method = RequestMethod.POST)
     @ResponseBody
-    public CustomerResponse addCustomer(@RequestBody Customer customer) {
+    public Response addCustomer(@RequestBody Customer customer) {
         try{
             return new CustomerResponse("Success",customerServices.addCustomer(customer));
         }catch (Exception exception) {
@@ -25,7 +26,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/customers/{customerId}",method = RequestMethod.GET)
-    public CustomerResponse getCustomerOrders(@PathVariable("customerId") String customerId) {
+    public Response getCustomerOrders(@PathVariable("customerId") String customerId) {
         try{
             return new CustomerResponse("Success",orderService.getCustomerOrders(customerId));
         }catch (Exception exception) {
